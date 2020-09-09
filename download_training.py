@@ -2,6 +2,7 @@ from os import system, mkdir
 import argparse
 from os.path import isdir, isfile
 
+
 def get_args():
     parser = argparse.ArgumentParser(description='TartanAir')
 
@@ -45,8 +46,10 @@ def get_args():
 
     return args
 
+
 def _help():
-    print ''
+    print()
+
 
 if __name__ == '__main__':
     args = get_args()
@@ -67,7 +70,6 @@ if __name__ == '__main__':
         print('--only-eazy and --only-hard tags can not be set at the same time!')
         exit()
 
-
     # filetype
     typelist = []
     if args.rgb:
@@ -78,11 +80,11 @@ if __name__ == '__main__':
         typelist.append('seg')
     if args.flow:
         typelist.append('flow')
-    if len(typelist)==0:
+    if len(typelist) == 0:
         print('Specify the type of data you want to download by --rgb/depth/seg/flow')
         exit()
 
-    # camera 
+    # camera
     cameralist = ['left', 'right', 'flow', 'mask']
     if args.only_left:
         cameralist.remove('right')
@@ -111,20 +113,20 @@ if __name__ == '__main__':
         difflevel = zf[-2]
 
         # image/depth/seg/flow
-        filetype = filename.split('_')[0] 
+        filetype = filename.split('_')[0]
         # left/right/flow/mask
         cameratype = filename.split('.')[0].split('_')[-1]
-        
-        if (difflevel in levellist) and (filetype in typelist) and (cameratype in cameralist):
-            downloadlist.append(zipfile) 
 
-    if len(downloadlist)==0:
+        if (difflevel in levellist) and (filetype in typelist) and (cameratype in cameralist):
+            downloadlist.append(zipfile)
+
+    if len(downloadlist) == 0:
         print('No file meets the condition!')
         exit()
 
     print('{} files are going to be downloaded...'.format(len(downloadlist)))
     for fileurl in downloadlist:
-        print fileurl
+        print(fileurl)
 
     for fileurl in downloadlist:
         zf = fileurl.split('/')
@@ -136,14 +138,14 @@ if __name__ == '__main__':
         if not isdir(envfolder):
             mkdir(envfolder)
             print('Created a new env folder {}..'.format(envfolder))
-        # else: 
+        # else:
         #     print('Env folder {} already exists..'.format(envfolder))
 
         levelfolder = envfolder + '/' + difflevel
         if not isdir(levelfolder):
             mkdir(levelfolder)
             print('  Created a new level folder {}..'.format(levelfolder))
-        # else: 
+        # else:
         #     print('Level folder {} already exists..'.format(levelfolder))
 
         targetfile = levelfolder + '/' + filename
@@ -152,8 +154,8 @@ if __name__ == '__main__':
             exit()
 
         if args.azcopy:
-            cmd = 'azcopy copy ' + fileurl + ' ' + targetfile 
+            cmd = 'azcopy copy ' + fileurl + ' ' + targetfile
         else:
             cmd = 'wget -r -O ' + targetfile + ' ' + fileurl
-        print cmd
+        print(cmd)
         system(cmd)
