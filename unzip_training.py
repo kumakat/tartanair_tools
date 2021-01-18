@@ -47,11 +47,9 @@ if __name__ == '__main__':
     tmpdirs = [path.replace('.zip', '') for path in zipfiles]
     for path in tmpdirs:
         envname, difflevel, dataname = path.split('/')[-3:]
-        trajectorys = glob('/'.join([path, envname, envname, difflevel, '*']))
-
-        for trajectory in trajectorys:
-            trajectoryname = trajectory.split('/')[-1]
-            destination = '/'.join([datadir, envname, difflevel, trajectoryname])
+        for t in glob('/'.join([path, envname, envname, difflevel, '*'])):
+            trajectory = t.split('/')[-1]
+            destination = '/'.join([datadir, envname, difflevel, trajectory])
 
             if not isdir(destination):
                 system(f'mkdir -p {destination}')
