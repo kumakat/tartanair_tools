@@ -1,10 +1,10 @@
 import sys
 import numpy as np
 import matplotlib.cm as cm
-import multiprocessing as mp
 import open3d as o3d
 from PIL import Image
 from glob import glob
+from concurrent.futures import ThreadPoolExecutor
 from scipy.spatial.transform import Rotation
 inv = np.linalg.inv
 
@@ -72,9 +72,9 @@ class TartanAirLoader(object):
             view1.append((t, a))
             view2.append((t, b))
 
-        data = mp.Pool().map(self._load_wrapper, view1 + view2)
-        # data = [self._load_wrapper(v) for v in view1 + view2]
-        data = np.asarray(data)
+        with ThreadPoolExecutor() as executor:
+            data = executor.map(self._load_wrapper, view1 + view2)
+        data = np.asarray(list(data))
 
         x = np.stack(data[:, 0])
         x = np.transpose((x - self.RGB_MEAN) / self.RGB_STD, (0, 3, 1, 2))
